@@ -1,0 +1,17 @@
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\KnockoutFirstKickOfTheCat.dll
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\KnockoutFirstKickOfTheCat.pdb
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\EntityFramework.dll
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\Microsoft.Web.Infrastructure.dll
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\Newtonsoft.Json.dll
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\SignalR.dll
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\SignalR.Hosting.AspNet.dll
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\SignalR.Hosting.Common.dll
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\EntityFramework.xml
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\Microsoft.Web.Infrastructure.xml
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\Newtonsoft.Json.xml
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\SignalR.xml
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\SignalR.Hosting.AspNet.xml
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\SignalR.Hosting.Common.xml
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\obj\Debug\ResolveAssemblyReference.cache
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\obj\Debug\KnockoutFirstKickOfTheCat.dll
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\obj\Debug\KnockoutFirstKickOfTheCat.pdb
