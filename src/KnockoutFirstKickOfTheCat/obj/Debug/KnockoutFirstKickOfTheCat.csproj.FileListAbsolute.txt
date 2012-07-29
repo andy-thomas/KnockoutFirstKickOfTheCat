@@ -1,0 +1,16 @@
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\bin\KnockoutFirstKickOfTheCat.dll
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\bin\KnockoutFirstKickOfTheCat.pdb
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\bin\EntityFramework.dll
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\bin\Microsoft.Web.Infrastructure.dll
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\bin\Newtonsoft.Json.dll
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\bin\SignalR.dll
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\bin\SignalR.Hosting.AspNet.dll
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\bin\SignalR.Hosting.Common.dll
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\bin\EntityFramework.xml
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\bin\Newtonsoft.Json.xml
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\bin\SignalR.xml
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\bin\SignalR.Hosting.AspNet.xml
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\bin\SignalR.Hosting.Common.xml
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\obj\Debug\ResolveAssemblyReference.cache
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\obj\Debug\KnockoutFirstKickOfTheCat.dll
+C:\Projects\KnockoutFirstKickOfTheCat(OnGit)\src\KnockoutFirstKickOfTheCat\obj\Debug\KnockoutFirstKickOfTheCat.pdb
