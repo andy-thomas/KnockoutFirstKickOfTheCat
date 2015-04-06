@@ -26,7 +26,7 @@ namespace KnockoutFirstKickOfTheCat
             routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters
-                new { controller = "ProductSR", action = "Index", id = UrlParameter.Optional } // Parameter defaults
+                new { controller = "Product", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
 
         }

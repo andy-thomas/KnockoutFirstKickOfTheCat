@@ -12,6 +12,6 @@ C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin
 C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\SignalR.xml
 C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\SignalR.Hosting.AspNet.xml
 C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\bin\SignalR.Hosting.Common.xml
-C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\obj\Debug\ResolveAssemblyReference.cache
+C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\obj\Debug\KnockoutFirstKickOfTheCat.csprojResolveAssemblyReference.cache
 C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\obj\Debug\KnockoutFirstKickOfTheCat.dll
 C:\Projects\Personal\KnockoutFirstKickOfTheCat\src\KnockoutFirstKickOfTheCat\obj\Debug\KnockoutFirstKickOfTheCat.pdb
