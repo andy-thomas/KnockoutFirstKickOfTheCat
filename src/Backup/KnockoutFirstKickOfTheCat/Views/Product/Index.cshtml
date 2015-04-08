@@ -1,0 +1,187 @@
+﻿@using System.Web.Script.Serialization
+
+@model IEnumerable<KnockoutFirstKickOfTheCat.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Products (<span data-bind="text: activeProducts().length"></span>)</</h2>
+
+<script type="text/javascript">
+    //http://stackoverflow.com/questions/5873636/how-to-enable-data-binding-in-knockoutjs-using-the-asp-net-mvc-3-razor-view-en
+    
+    // Dirty flag: http://jsfiddle.net/rniemeyer/dtpfv/
+    ko.basicDirtyFlag = function(root) {
+        var _isDirty = ko.observable(false);
+
+        var result = ko.dependentObservable(function() {
+            if (!_isDirty()) {
+                ko.toJS(root); //just for subscriptions
+            }
+
+            return _isDirty();
+        });
+
+        result.subscribe(function() {
+            if (!_isDirty()) {
+                _isDirty(true);
+            }
+        });
+       
+        return result;
+    };
+
+    ko.dirtyFlag = function(root, isInitiallyDirty) {
+        var result = function() {},
+            initialState = ko.observable(ko.toJSON(root)),
+            initiallyDirty = ko.observable(isInitiallyDirty);
+        result.isDirty = ko.dependentObservable(function() {
+            return initiallyDirty() || initialState() !== ko.toJSON(root);
+        });
+
+        result.reset = function() {
+            initialState(ko.toJSON(root));
+            initiallyDirty(false);
+        };
+
+        return result;
+    };
+    
+    var initialData = @Html.Raw( new JavaScriptSerializer().Serialize(Model));
+    var categoryList = @Html.Raw( new JavaScriptSerializer().Serialize(ViewBag.CategoryList));
+
+   var ObservableProduct = function(id, name, description, categoryId, activeDate, unitPrice, isActive) {         
+        this.Id = ko.observable(id);         
+        this.Name = ko.observable(name);         
+        this.Description = ko.observable(description);
+        this.CategoryId = ko.observable(categoryId);
+        this.ActiveDate = ko.observable(activeDate);
+        this.UnitPrice = ko.observable(unitPrice);
+        this.dirtyFlag = new ko.dirtyFlag(this);
+//        this.IsDirty = new ko.dependentObservable(function() {
+//                return this.dirtyFlag.isDirty();    
+//            }, this);
+       this.IsDirty = new ko.basicDirtyFlag(this);
+       this.IsActive = ko.observable(isActive);
+       //};
+    };
+
+   var viewModel = new ViewModel();
+   
+    function ViewModel() {
+        var self = this;
+        self.products = ko.observableArray(ko.utils.arrayMap(initialData, function(product) {
+            return new ObservableProduct(
+                product.Id, product.Name, product.Description, 
+                product.CategoryId, product.ActiveDateString, product.UnitPrice, true);
+        }));
+        self.categories = ko.observableArray(categoryList);
+
+        // Operations
+        self.addItem = function() {
+            self.products.push(new ObservableProduct(0, "", "", 1, "", 0, true));
+            ApplyDatePickers(); // apply the datepicker UI widget to the new row
+        };
+
+        //self.removeItem = function(product) { self.products.remove(product); };
+        self.removeItem = function(product) { product.IsActive(false); };
+
+        self.save = function() {
+            //alert(ko.toJSON({ products: this.products }));
+            $.ajax("/product/saveform", {
+                data: ko.toJSON({ products: self.products }),
+                type: "post", 
+                contentType: "application/json"
+                //, success: function(result) { alert(result); }
+            });
+        };
+
+        self.dirtyItems = ko.dependentObservable(function() {
+            return ko.utils.arrayFilter(self.products(), function(product) {
+                //alert('kkk ' + product.dirtyFlag.isDirty() + '  ' + product.Id());
+                return (product.dirtyFlag.isDirty() || product.Id() == 0);
+            });
+        }, self);
+        
+        self.activeProducts = function()
+        {
+            return ko.utils.arrayFilter(this.products(), function(product) {
+                    return product.IsActive();
+                }, self);
+        };
+
+    };
+
+//    viewModel.dirtyItems = ko.dependentObservable(function() {
+//        return ko.utils.arrayFilter(this.products(), function(product) {
+//            //return product.isDirty.isDirty();
+//            alert(product.dirtyFlag.lb);
+//             return product.dirtyFlag.lb;
+//        });
+//    }, viewModel);
+
+//    viewModel.isDirty = ko.dependentObservable(function() {
+//        return this.dirtyItems().length > 0;
+//    }, viewModel);
+//   
+    $(function() {
+        ko.applyBindings(viewModel);
+
+        ApplyDatePickers();
+        
+       
+    });
+    
+    function ApplyDatePickers() {
+        $(".datePicker").datepicker({
+            buttonImage: "/content/images/calendar.gif", 
+            showOn: "both", 
+            showAnim: 'slideDown',
+            dateFormat: 'yy/mm/dd'
+            });
+    }
+  
+    
+</script>
+
+<table>
+    <thead>
+<tr> <th>Name</th> <th>Description</th> <th>Category</th> <th>Active</th> <th>Unit Price($)</th></tr>
+</thead>
+    <tbody data-bind="template: { name:'productListJavascriptTemplate', foreach: products}"></tbody>
+</table>
+<button data-bind='click: addItem'>Add product</button>
+
+<hr/>
+
+<button data-bind="click: save">Save2</button>
+@*<form action="/Product/SaveForm" method="post">*@
+<form>
+    @*<input type="hidden" name="products" data-bind="value: ko.toJSON(products)" />*@
+    <button type="submit">Save</button>
+</form>
+
+<script type="text/html" id="productListJavascriptTemplate">
+    <tr data-bind="visible : IsActive">
+        <td><input class="required" type="hidden" data-bind="value: Id" />
+            <input data-bind="value: Name, uniqueName: true"/></td>
+        <td><input data-bind="value: Description, uniqueName: true"/></td>
+        @*<td>Description: <span data-bind="text: Description"/></td>*@
+        <td><select data-bind="options: viewModel.categories, 
+            optionsText: 'Name', optionsValue: 'Id', value: CategoryId,
+            optionsCaption: 'Please select...', 
+            uniqueName: true"></select></td>
+        @*<td>CategoryId: <input data-bind="value: CategoryId"/></td>*@
+        <td><input class="datePicker" data-bind="value: ActiveDate, uniqueName: true"/></td>
+        <td><input class="required number" data-bind="value: UnitPrice, uniqueName: true"/></td>
+        <td><a href="#" data-bind="click: $root.removeItem">Remove</a></td>
+        
+    </tr>
+
+</script>
+<script type="text/javascript">
+
+    $("form").validate({ submitHandler: function () { viewModel.save(); } });
+</script>
+

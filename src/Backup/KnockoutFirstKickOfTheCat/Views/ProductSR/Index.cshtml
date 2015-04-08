@@ -1,0 +1,277 @@
+﻿<!-- Used for SignalR --> 
+<link href="@Url.Content("~/Content/Products.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("~/Scripts/jquery.signalR.min.js")" type="text/javascript"></script> 
+<script src="@Url.Content("~/signalr/hubs")" type="text/javascript"></script> 
+
+
+@model object
+
+@{
+    ViewBag.Title = "Products";    
+}
+
+<div id="error" class="validation-summary-errors">  
+</div>
+
+<script type="text/javascript">
+
+    $(function () {
+
+
+        // -- View Models
+
+        // Product View Model
+        function productViewModel(id, name, description, categoryId, activeDate, unitPrice, isActive, ownerViewModel, subscribeToChanges) {
+            var self = this;
+
+            this.Id = ko.observable(id);
+            this.Name = ko.observable(name);
+            this.Description = ko.observable(description);
+            this.CategoryId = ko.observable(categoryId);
+            this.ActiveDate = ko.observable(activeDate);
+            this.UnitPrice = ko.observable(unitPrice);
+            this.IsActive = ko.observable(isActive);
+
+
+            function performUpdate(newValue) {
+                ownerViewModel.updateProduct(ko.toJS(self));
+            };
+
+            this.remove = function () {
+                ownerViewModel.removeProduct(this);
+            };
+
+            //            this.Name.subscribe(function (newValue) { ownerViewModel.updateProduct(ko.toJS(self)); });
+            //            this.Description.subscribe(function (newValue) { ownerViewModel.updateProduct(ko.toJS(self)); });
+            //            this.CategoryId.subscribe(function (newValue) { ownerViewModel.updateProduct(ko.toJS(self)); });
+            //            this.ActiveDate.subscribe(function (newValue) { ownerViewModel.updateProduct(ko.toJS(self)); });
+            //            this.UnitPrice.subscribe(function (newValue) { ownerViewModel.updateProduct(ko.toJS(self)); });
+            //            this.IsActive.subscribe(function (newValue) { ownerViewModel.updateProduct(ko.toJS(self)); });
+            if (subscribeToChanges) {
+                this.CategoryId.subscribe(performUpdate);
+                this.Name.subscribe(performUpdate);
+                this.Description.subscribe(performUpdate);
+                this.ActiveDate.subscribe(performUpdate);
+                this.UnitPrice.subscribe(performUpdate);
+                this.IsActive.subscribe(performUpdate);
+            }
+
+
+        };
+
+        Date.prototype.yyyymmdd = function () {
+            var year, month, day;
+            year = String(this.getFullYear());
+            month = String(this.getMonth() + 1);
+            if (month.length == 1) {
+                month = "0" + month;
+            }
+            day = String(this.getDate());
+            if (day.length == 1) {
+                day = "0" + day;
+            }
+            return year + "/" + month + "/" + day;
+
+        };
+        var today = new Date();
+        var todayString = today.yyyymmdd();
+
+        // Category View Model
+        function categoryViewModel(id, name, description, ownerViewModel) {
+            var self = this;
+
+            this.Id = ko.observable(id);
+            this.Name = ko.observable(name);
+            this.Description = ko.observable(description);
+        };
+
+        // Product List View Model
+        function productListViewModel() {
+            var self = this;
+
+            this.hub = $.connection.productHub;
+
+            this.products = ko.observableArray([]);
+            this.categories = ko.observableArray([]);
+
+            this.NewItem = ko.observable(new productViewModel("0", "", "", 1, todayString, "0", "true", self, false));
+
+            var products = this.products;
+            var categories = this.categories;
+            var notify = true;
+
+
+            // Operations
+            //To create a task  
+            this.addProduct = function () {
+                this.hub.add(ko.toJS(this.NewItem)).done(function () {
+                    //console.log('Success!');
+                }).fail(function (e) {
+                    //console.warn(e);
+                });
+
+                notify = false;
+                this.NewItem(new productViewModel("0", "", "", 1, todayString, "0", "true", self, true));
+                notify = true;
+            };
+
+
+            // Initializes the view model
+            this.init = function () {
+                
+                this.hub.getAllCategories();
+
+                // NOTE: sometimes this fires before getAllCategories, which causes an attempt to save a Product with CategoryId = 0, -> exception!
+                // How do we guarantee the getAllCategories completes before calling getAllProducts?
+                this.hub.getAllProducts();
+                
+            };
+
+
+            this.hub.renderAllProducts = function (allProducts) {
+                //alert("renderAllProducts");
+                var mappedProducts = $.map(allProducts, function (item) {
+                    return new productViewModel(item.Id, item.Name, item.Description, item.CategoryId, item.ActiveDateString, item.UnitPrice, item.IsActive, self, true);
+                });
+                products(mappedProducts);
+                ApplyDatePickers();
+            };
+
+            this.hub.renderAllCategories = function (allCategories) {
+                //alert("renderAllCategories");
+                var mappedCategories = $.map(allCategories, function (item) {
+                    return new categoryViewModel(item.Id, item.Name, item.Description, self);
+                });
+                categories(mappedCategories);
+            };
+
+            this.updateProduct = function (product) {
+                if (notify)
+                    this.hub.update(product);
+            };
+
+            this.hub.productUpdated = function (item) {
+
+                var productlist = ko.utils.arrayFilter(products(), function (value) {
+                    return value.Id() == item.Id;
+                });
+                var product = productlist[0];
+                notify = false;
+                product.Name(item.Name);
+                product.Description(item.Description);
+                product.CategoryId(item.CategoryId);
+                product.ActiveDate(item.ActiveDateString);
+                product.UnitPrice(item.UnitPrice);
+                product.IsActive(item.IsActive);
+                notify = true;
+            };
+
+
+            this.hub.productAdded = function (item) {
+                notify = false;
+                products.push(new productViewModel(item.Id, item.Name, item.Description, item.CategoryId, item.ActiveDateString, item.UnitPrice, item.IsActive, self, true));
+                notify = true;
+                ApplyDatePickers();
+            };
+
+            //To remove a product  
+            this.removeProduct = function (product) {
+                notify = false;
+                this.hub.remove(product.Id());
+                notify = true;
+            };
+
+
+            this.hub.productRemoved = function (id) {
+                var product = ko.utils.arrayFilter(products(), function (value) {
+                    return value.Id() == id;
+                })[0];
+                products.remove(product);
+            };
+
+            this.hub.reportError = function (error) {
+                $('#error').text(error);
+                $('#error').fadeIn(1000, function () {
+                    $('#error').fadeOut(3000);
+                });
+            };
+        };
+
+        var viewModel = new productListViewModel();
+
+        // Start the connection
+        $.connection.hub.start(function () {
+            viewModel.init();
+            ko.applyBindings(viewModel);
+        });
+
+        //ko.applyBindings(viewModel);
+
+    });
+
+
+    function ApplyDatePickers() {
+        $(".datePicker").datepicker({
+            buttonImage: "/content/images/calendar.gif",
+            showOn: "both",
+            showAnim: 'slideDown',
+            dateFormat: 'yy/mm/dd'
+        });
+    }
+    
+</script>
+
+<h2>Products using SignalR</h2>
+
+<table>
+    <thead>
+<tr> <th>Name</th> <th>Description</th> <th>Category</th> <th>Active</th> <th>Unit Price($)</th></tr>
+</thead>
+    <tbody data-bind="template: { name:'productListJavascriptTemplate', foreach: products}"></tbody>
+</table>
+
+
+<script type="text/html" id="productListJavascriptTemplate">
+    <tr> @*data-bind="visible : IsActive">*@
+        <td><input class="required" type="hidden" data-bind="value: Id" />
+            <input data-bind="value: Name, uniqueName: true"/></td>
+        <td><input data-bind="value: Description, uniqueName: true"/></td>
+        <td><select data-bind="options: $root.categories, optionsText: 'Name', optionsValue: 'Id', value: CategoryId, optionsCaption: 'Please select...' " ></select></td>
+        @*<td>CategoryId: <input data-bind="value: CategoryId"/></td>*@
+        <td><input class="datePicker" data-bind="value: ActiveDate, uniqueName: true"/></td>
+        <td><input class="required number" data-bind="value: UnitPrice, uniqueName: true"/></td>
+        <td><a href="#" data-bind="click: remove">Remove</a></td>
+        
+    </tr>
+
+</script>
+
+
+<form data-bind="with:NewItem, submit:addProduct" class="addProduct">
+        <input data-bind="value: Name"/>
+        <input data-bind="value: Description"/>
+        <select data-bind="options: $parent.categories, optionsText: 'Name', optionsValue: 'Id', value: CategoryId, optionsCaption: 'Please select...' " ></select>
+        <input class="datePicker" data-bind="value: ActiveDate"/>
+        <input class="required number" data-bind="value: UnitPrice"/>
+        <input class="ui-button" type="submit" value="Add Product" />  
+</form>
+
+
+
+
+
+@*
+<ul data-bind="template: { name: 'productTemplate', foreach: products }, visible: products().length > 0">  
+</ul> 
+<script type="text/html" id="productTemplate">
+<!--Data Template-->
+    <li><input type="hidden" data-bind="value: Id" />
+        <input data-bind="value: Name"/>
+        <input data-bind="value: Description"/>
+        <input data-bind="value: CategoryId"/>
+        <select data-bind="options: $root.categories, optionsText: 'Name', optionsValue: 'Id', value: CategoryId, optionsCaption: 'Please select...' " ></select>
+        <input class="datePicker" data-bind="value: ActiveDate"/>
+        <input data-bind="value: UnitPrice"/>
+        <input type="checkbox" data-bind="value: IsActive"/>
+    </li>
+</script>*@

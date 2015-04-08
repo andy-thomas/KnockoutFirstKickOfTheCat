@@ -21,7 +21,7 @@ namespace KnockoutFirstKickOfTheCat.Models
         [Range(0, double.MaxValue, ErrorMessage="{0} must be greater than zero")]
         public decimal UnitPrice { get; set; }
 
-        [Range(typeof(DateTime), "1/1/1980", "31/12/2050",
+        [Range(typeof(DateTime), "1980/1/1", "2050/12/31",
         ErrorMessage = "Value for {0} must be between {1} and {2}")]
         public DateTime ActiveDate { get; set; }
 

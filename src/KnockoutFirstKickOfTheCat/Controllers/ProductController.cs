@@ -141,12 +141,11 @@ namespace KnockoutFirstKickOfTheCat.Controllers
 
             return RedirectToAction("Index");
         }
-
         
         private void DeleteProduct(Product product)
         {
             Product repoProduct = db.Products.Find(product.Id);
-            db.Products.Remove(repoProduct);
+            if (repoProduct != null) db.Products.Remove(repoProduct);
             db.SaveChanges();       
         }
 

@@ -118,7 +118,7 @@
 
             // Initializes the view model
             this.init = function () {
-                
+                //alert("ok");
                 this.hub.getAllCategories();
 
                 // NOTE: sometimes this fires before getAllCategories, which causes an attempt to save a Product with CategoryId = 0, -> exception!

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using KnockoutFirstKickOfTheCat.Models;
-using SignalR.Hubs;
+using Microsoft.AspNet.SignalR;
 
 namespace KnockoutFirstKickOfTheCat.SignalRHubs
 {
@@ -17,7 +15,7 @@ namespace KnockoutFirstKickOfTheCat.SignalRHubs
             using (var context = new StoreContext())
             {
                 var result = context.Products.ToArray();
-                Caller.renderAllProducts(result);
+                Clients.Caller.renderAllProducts(result);
             }
         }
 
@@ -29,7 +27,7 @@ namespace KnockoutFirstKickOfTheCat.SignalRHubs
             using (var context = new StoreContext())
             {
                 var result = context.Categories.ToArray();
-                Caller.renderAllCategories(result);
+                Clients.Caller.renderAllCategories(result);
             }
         }
 
@@ -53,13 +51,13 @@ namespace KnockoutFirstKickOfTheCat.SignalRHubs
                         oldProduct.IsActive = product.IsActive;
 
                         context.SaveChanges();
-                        Clients.productUpdated(oldProduct);
+                        Clients.All.productUpdated(oldProduct);
                         return true;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Caller.reportError("Oops! Unable to update product: " + ex);
+                    Clients.Caller.reportError("Oops! Unable to update product: " + ex);
                     return false;
                 }
             }
@@ -74,13 +72,13 @@ namespace KnockoutFirstKickOfTheCat.SignalRHubs
                     Product product = context.Products.Find(id);
                     context.Products.Remove(product);
                     context.SaveChanges();
-                    Clients.productRemoved(id);
+                    Clients.All.productRemoved(id);
                     return true;
                 }
             }
             catch (Exception ex)
             {
-                Caller.reportError("Oops! Unable to remove product: " + ex);
+                Clients.Caller.reportError("Oops! Unable to remove product: " + ex);
                 return false;
             }
         }
@@ -93,13 +91,13 @@ namespace KnockoutFirstKickOfTheCat.SignalRHubs
                 {
                     Product savedProduct = context.Products.Add(product);
                     context.SaveChanges();
-                    Clients.productAdded(savedProduct);
+                    Clients.All.productAdded(savedProduct);
                     return true;
                 }
             }
             catch (Exception ex)
             {
-                Caller.reportError("Oops! Unable to add product: " + ex);
+                Clients.Caller.reportError("Oops! Unable to add product: " + ex);
                 return false;
             }
         }
